@@ -11,49 +11,8 @@ local addon = CreateFrame('Frame')
 
 addon.onupdate_timer = 0
 
-function addon:doLightningbolt ()
-	local maelstrom_is_up = select(4, UnitBuff('player', 'Maelstrom Weapon')) == 4
-
-	if maelstrom_is_up then
-		return 'Lightning Bolt'
-	else
-		return false
-	end
-end
-
-function addon:doStormstrike ()
-	local stormstrike_is_up = GetSpellCooldown('Stormstrike') == 0
-
-	if stormstrike_is_up then
-		return 'Stormstrike'
-	else
-		return false
-	end
-end
-
-function addon:doEarthshock ()
-	local earthshock_is_up = GetSpellCooldown('Earth Shock') == 0
-
-	if earthshock_is_up then
-		return 'Earth Shock'
-	else
-		return false
-	end
-end
-
-function addon:doLavaLash ()
-	local lavalash_is_up = GetSpellCooldown('Lava Lash') == 0
-
-	if lavalash_is_up then
-		return 'Lava Lash'
-	else
-		return false
-	end
-end
-
 function addon:getNextSpell()
 	local getCD = _G.GetSpellCooldown
-	local rotation = self.rotation
 
 	local lowest_time
 	local lowest_spell
@@ -94,14 +53,16 @@ end
 function addon:PLAYER_LOGIN ()
 	local spellframe = CreateFrame('Frame', 'idShamanHUDSpellFrame', UIParent)
 	local gcdframe = CreateFrame('StatusBar', 'idShamanHUDGCDFrame', spellframe)
+	local mwframe = CreateFrame('Frame', 'idShamanHUDMaelstromWeaponFrame', spellframe)
 
-	spellframe.texture = spellframe:CreateTexture(nil, 'HIGH')
-	spellframe.texture:SetAllPoints(spellframe)
 	spellframe:SetWidth(icon_size)
 	spellframe:SetHeight(icon_size)
 	spellframe:SetPoint(MC, UIParent, MC, 100, 100)
 	spellframe:Show()
 	self.spellframe = spellframe
+
+	spellframe.texture = spellframe:CreateTexture(nil, 'HIGH')
+	spellframe.texture:SetAllPoints(spellframe)
 
 	gcdframe:SetWidth(spellframe:GetWidth())
 	gcdframe:SetHeight(spellframe:GetHeight() / 4)
@@ -110,12 +71,40 @@ function addon:PLAYER_LOGIN ()
 	gcdframe:Show()
 	self.gcdframe = gcdframe
 
-	self.rotation = {
-		self.doLightningbolt,
-		self.doStormstrike,
-		self.doEarthshock,
-		self.doLavaLash,
-	}
+	gcdframe.background = gcdframe:CreateTexture(nil, 'BACKGROUND')
+	gcdframe.background:SetAllPoints(gcdframe)
+	gcdframe.background:SetTexture(0, 0, 0, 1)
+
+	mwframe:SetWidth(spellframe:GetWidth() / 4)
+	mwframe:SetHeight(spellframe:GetHeight())
+	mwframe:SetPoint(ML, spellframe, MR)
+
+	local f, width, height, padding
+	width = mwframe:GetWidth()
+	padding = width / 5 / 2
+	height = mwframe:GetHeight() - padding * 6
+
+	for i = 1, 5 do
+		f = mwframe:CreateTexture('nil', 'HIGH')
+
+		f:SetWidth(width / 5 * 4)
+		f:SetHeight(height / 5)
+		f:SetTexture(1, 0, 0, 1)
+
+		if i == 1 then
+			f:SetPoint(TL, mwframe, TL, padding, -padding)
+		else
+			f:SetPoint(TC, mwframe['count' .. i - 1], BC, 0, -padding)
+		end
+
+		mwframe['count' .. i] = f
+	end
+
+	mwframe.background = mwframe:CreateTexture(nil, 'BACKGROUND')
+	mwframe.background:SetAllPoints(mwframe)
+	mwframe.background:SetTexture(0, 0, 0, 1)
+
+	self.mwframe = mwframe
 end
 
 function addon:onevent (event_name, ...)
@@ -153,6 +142,15 @@ function addon:onupdate (time_passed)
 
 	cdframe:SetMinMaxValues(spell_start, spell_end)
 	cdframe:SetValue(time)
+
+	mwcount = select(4, UnitBuff('player', 'Maelstrom Weapon'))
+	for i = 1, 5 do
+		if mwcount and i <= mwcount then
+			self.mwframe['count' .. i]:SetAlpha(100)
+		else
+			self.mwframe['count' .. i]:SetAlpha(0)
+		end
+	end
 end
 
 addon:RegisterEvent('PLAYER_LOGIN')
