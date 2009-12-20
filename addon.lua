@@ -1,5 +1,8 @@
 if select(2, UnitClass('player')) ~= 'SHAMAN' then return end
 
+-- TODO: check for feral spirit, deactivate otherwise
+-- TODO: make the thing draggable
+
 local _G = _G
 local TL, TC, TR = 'TOPLEFT', 'TOP', 'TOPRIGHT'
 local ML, MC, MR = 'LEFT', 'CENTER', 'RIGHT'
@@ -21,7 +24,10 @@ function addon:getNextSpell()
 	local es_start, es_time, es_end
 	local ll_start, ll_time, ll_end
 
-	if select(4, UnitBuff('player', 'Maelstrom Weapon')) == 5 then
+	if
+		select(4, UnitBuff('player', 'Maelstrom Weapon')) == 5 and
+		select(4, UnitDebuff('target', 'Stormstrike')) > 0
+	then
 		return 'Lightning Bolt'
 	else
 		ss_start, ss_time = getCD('Stormstrike')
@@ -142,6 +148,11 @@ function addon:onupdate (time_passed)
 
 	cdframe:SetMinMaxValues(spell_start, spell_end)
 	cdframe:SetValue(time)
+	if spell_start <= 0 then
+		cdframe.background:SetTexture(0, 1, 0, 1)
+	else
+		cdframe.background:SetTexture(0, 0, 0, 1)
+	end
 
 	mwcount = select(4, UnitBuff('player', 'Maelstrom Weapon'))
 	for i = 1, 5 do
