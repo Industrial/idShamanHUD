@@ -23,10 +23,13 @@ function addon:getNextSpell()
 	local ss_start, ss_time, ss_end
 	local es_start, es_time, es_end
 	local ll_start, ll_time, ll_end
+	
+	local mw = select(4, UnitBuff('player', 'Maelstrom Weapon'))
+	local ss = select(4, UnitDebuff('target', 'Stormstrike'))
 
 	if
-		select(4, UnitBuff('player', 'Maelstrom Weapon')) == 5 and
-		select(4, UnitDebuff('target', 'Stormstrike')) > 0
+		mw and mw == 5 and
+		ss and ss > 0
 	then
 		return 'Lightning Bolt'
 	else
@@ -63,7 +66,7 @@ function addon:PLAYER_LOGIN ()
 
 	spellframe:SetWidth(icon_size)
 	spellframe:SetHeight(icon_size)
-	spellframe:SetPoint(MC, UIParent, MC, 100, 100)
+	spellframe:SetPoint(MC, UIParent, MC, 0, 0)
 	spellframe:Show()
 	self.spellframe = spellframe
 
