@@ -10,6 +10,14 @@ local BL, BC, BR = 'BOTTOMLEFT', 'BOTTOM', 'BOTTOMRIGHT'
 
 local icon_size = 50
 
+local bindings = {
+	['Lightning Bolt'] = '1',
+	['Storm Strike'] = '2',
+	['Lava Lash'] = '3',
+	['Flame Shock'] = 's2',
+	['Earth Shock'] = 's3',
+}
+
 local addon = CreateFrame('Frame')
 
 addon.onupdate_timer = 0
@@ -69,10 +77,18 @@ function addon:PLAYER_LOGIN ()
 	local gcdframe = CreateFrame('StatusBar', 'idShamanHUDGCDFrame', spellframe)
 	local mwframe = CreateFrame('Frame', 'idShamanHUDMaelstromWeaponFrame', spellframe)
 
+	spellframe.text = spellframe:CreateFontString(nil, 'ARTWORK')
+
 	spellframe:SetWidth(icon_size)
 	spellframe:SetHeight(icon_size)
 	spellframe:SetPoint(MC, UIParent, MC, 0, 0)
 	spellframe:Show()
+	spellframe.text:SetPoint(MC, spellframe, MC)
+	spellframe.text:SetJustifyH('RIGHT')
+	spellframe.text:SetFont(GameFontNormal:GetFont(), 24, 'OUTLINE')
+	spellframe.text:SetTextColor(1, 1, 1)
+	spellframe.text:SetShadowColor(0, 0, 0)
+	spellframe.text:SetShadowOffset(1, -1)
 	self.spellframe = spellframe
 
 	spellframe.texture = spellframe:CreateTexture(nil, 'HIGH')
@@ -132,6 +148,7 @@ end
 function addon:onupdate (time_passed)
 	local getCD = _G.GetSpellCooldown
 	local iconframe = self.spellframe.texture
+	local bindingtext = self.spellframe.text
 	local cdframe = self.gcdframe
 
 	local spell = self:getNextSpell()
@@ -139,13 +156,20 @@ function addon:onupdate (time_passed)
 	local spell_duration
 	local spell_end
 
+	local binding
 	local time = GetTime()
 
 	if spell then
 		spell_start, spell_duration = getCD(spell)
 		spell_end = spell_start + spell_duration
 
+
 		iconframe:SetTexture(select(3, GetSpellInfo(spell)))
+
+		binding = bindings[spell]
+		if binding then
+			bindingtext:SetText(bindings[spell])
+		end
 
 	else
 		spell_start, spell_duration = getCD('Lightning Bolt')
