@@ -12,7 +12,7 @@ local icon_size = 50
 
 local bindings = {
 	['Lightning Bolt'] = '1',
-	['Storm Strike'] = '2',
+	['Stormstrike'] = '2',
 	['Lava Lash'] = '3',
 	['Flame Shock'] = 's2',
 	['Earth Shock'] = 's3',
