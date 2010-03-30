@@ -151,7 +151,7 @@ function addon:onupdate (time_passed)
 	local bindingtext = self.spellframe.text
 	local cdframe = self.gcdframe
 
-	local spell = self:getNextSpell()
+	local spell
 	local spell_start
 	local spell_duration
 	local spell_end
@@ -159,23 +159,15 @@ function addon:onupdate (time_passed)
 	local binding
 	local time = GetTime()
 
-	if spell then
-		spell_start, spell_duration = getCD(spell)
-		spell_end = spell_start + spell_duration
+	spell = self:getNextSpell()
+	spell_start, spell_duration = getCD(spell)
+	spell_end = spell_start + spell_duration
 
+	iconframe:SetTexture(select(3, GetSpellInfo(spell)))
 
-		iconframe:SetTexture(select(3, GetSpellInfo(spell)))
-
-		binding = bindings[spell]
-		if binding then
-			bindingtext:SetText(bindings[spell])
-		end
-
-	else
-		spell_start, spell_duration = getCD('Lightning Bolt')
-		spell_end = spell_start + spell_duration
-
-		iconframe:SetTexture('')
+	binding = bindings[spell]
+	if binding then
+		bindingtext:SetText(bindings[spell])
 	end
 
 	cdframe:SetMinMaxValues(spell_start, spell_end)
