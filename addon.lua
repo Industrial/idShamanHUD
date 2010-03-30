@@ -36,6 +36,7 @@ function addon:getNextSpell()
 		ss_start, ss_time = getCD('Stormstrike')
 		ss_end = ss_start + ss_time
 
+		-- flame shock is on the same cooldown
 		es_start, es_time = getCD('Earth Shock')
 		es_end = es_start + es_time
 
@@ -47,7 +48,11 @@ function addon:getNextSpell()
 
 		if es_end < lowest_time then
 			lowest_time = es_end
-			lowest_spell = 'Earth Shock'
+			if UnitDebuff('target', 'Flame Shock') then
+				lowest_spell = 'Earth Shock'
+			else
+				lowest_spell = 'Flame Shock'
+			end
 		end
 
 		if ll_end < lowest_time then
