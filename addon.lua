@@ -135,6 +135,8 @@ function addon:PLAYER_LOGIN ()
 	mwframe.background:SetTexture(0, 0, 0, 1)
 
 	self.mwframe = mwframe
+
+	self:onupdate(1)
 end
 
 function addon:onevent (event_name, ...)
