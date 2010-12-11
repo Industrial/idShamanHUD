@@ -11,9 +11,10 @@ local BL, BC, BR = 'BOTTOMLEFT', 'BOTTOM', 'BOTTOMRIGHT'
 local icon_size = 50
 
 local bindings = {
-  ['Lightning Bolt'] = '1',
+  ['Unleash Elements'] = '1',
   ['Stormstrike'] = '2',
   ['Lava Lash'] = '3',
+  ['Lightning Bolt'] = 's1',
   ['Flame Shock'] = 's2',
   ['Earth Shock'] = 's3',
 }
