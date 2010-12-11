@@ -99,6 +99,7 @@ function enable ()
 
   spell_frame.texture = spell_frame:CreateTexture(nil, 'HIGH')
   spell_frame.texture:SetAllPoints(spell_frame)
+  spell_frame.texture:SetTexCoord(.07, .93, .07, .93)
 
   event_frame:SetScript('OnUpdate', onupdate)
 end
