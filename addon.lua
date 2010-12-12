@@ -19,7 +19,7 @@ local bindings = {
 }
 local event_frame = CreateFrame('Frame')
 local spell_frame
-local maelstrom_weapon_frame
+local shield_frame
 
 -- functions
 local get_next_spell
@@ -75,10 +75,11 @@ end
 
 function enable ()
   spell_frame = CreateFrame('Frame', 'idShamanHUDSpellFrame', UIParent)
+  shield_frame = CreateFrame('Frame', 'idShamanHUDShieldFrame', UIParent)
 
   spell_frame:SetWidth(icon_size)
   spell_frame:SetHeight(icon_size)
-  spell_frame:SetPoint(MC, UIParent, MC, 0, 0)
+  spell_frame:SetPoint(MC, UIParent, MC, 0, -150)
   spell_frame:Show()
 
   spell_frame.binding_text = spell_frame:CreateFontString(nil, 'ARTWORK')
@@ -100,6 +101,16 @@ function enable ()
   spell_frame.texture = spell_frame:CreateTexture(nil, 'HIGH')
   spell_frame.texture:SetAllPoints(spell_frame)
   spell_frame.texture:SetTexCoord(.07, .93, .07, .93)
+
+  shield_frame:SetWidth(spell_frame:GetWidth() / 100 * 80)
+  shield_frame:SetHeight(spell_frame:GetHeight() / 100 * 80)
+  shield_frame:SetPoint(MR, spell_frame, ML, -5, 0)
+  shield_frame:Show()
+
+  shield_frame.texture = shield_frame:CreateTexture(nil, 'HIGH')
+  shield_frame.texture:SetAllPoints(shield_frame)
+  shield_frame.texture:SetTexture(select(3, GetSpellInfo('Lightning Shield')))
+  shield_frame.texture:SetTexCoord(.07, .93, .07, .93)
 
   event_frame:SetScript('OnUpdate', onupdate)
 end
@@ -127,6 +138,12 @@ function onupdate (time_passed)
   end
 
   spell_frame.cooldown_text:SetText(spell_end > time and ('%.1f'):format(spell_end - time) or 0)
+
+  if not UnitBuff('player', 'Lightning Shield') then
+    shield_frame:SetAlpha(1)
+  else
+    shield_frame:SetAlpha(0)
+  end
 end
 
 event_frame:SetScript('OnEvent', function(frame, event, ...)
