@@ -1,8 +1,8 @@
 if select(2, UnitClass('player')) ~= 'SHAMAN' then return end
 
--- TODO: check for feral spirit, deactivate otherwise
 -- TODO: make the thing draggable
 -- TODO: make it work for all levels, adding spells when you have them
+-- TODO: make it do nothing if not enhancement specced
 
 local TL, TC, TR = 'TOPLEFT', 'TOP', 'TOPRIGHT'
 local ML, MC, MR = 'LEFT', 'CENTER', 'RIGHT'
