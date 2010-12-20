@@ -9,13 +9,13 @@ local ML, MC, MR = 'LEFT', 'CENTER', 'RIGHT'
 local BL, BC, BR = 'BOTTOMLEFT', 'BOTTOM', 'BOTTOMRIGHT'
 local icon_size = 50
 local bindings = {
-  ['Unleash Elements'] = '1',
+  ['Lava Lash'] = '1',
   ['Stormstrike'] = '2',
-  ['Lava Lash'] = '3',
-  ['Lightning Bolt'] = 's1',
-  ['Flame Shock'] = 's2',
-  ['Earth Shock'] = 's3',
-  ['Lightning Shield'] = 's4',
+  ['Earth Shock'] = '3',
+  ['Unleash Elements'] = 'S1',
+  ['Flame Shock'] = 'S2',
+  ['Lightning Bolt'] = 'S3',
+  ['Lightning Shield'] = 'S=',
 }
 local event_frame = CreateFrame('Frame')
 local spell_frame
@@ -153,3 +153,4 @@ event_frame:SetScript('OnEvent', function(frame, event, ...)
 end)
 
 event_frame:RegisterEvent('PLAYER_LOGIN')
+
