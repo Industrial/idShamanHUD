@@ -12,6 +12,7 @@ local bindings = {
   ['Lava Lash'] = '1',
   ['Stormstrike'] = '2',
   ['Earth Shock'] = '3',
+  ['Searing Totem'] = '4',
   ['Unleash Elements'] = 'S1',
   ['Flame Shock'] = 'S2',
   ['Lightning Bolt'] = 'S3',
