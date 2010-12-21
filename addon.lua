@@ -97,7 +97,9 @@ function get_next_spell()
   if fs_end < lowest_time then
     lowest_time = fs_end
 
-    if UnitBuff('target', 'Flame Shock') then
+    if UnitBuff('player', 'Unleash Flame') then
+      lowest_spell = 'Flame Shock'
+    elseif UnitDebuff('target', 'Flame Shock') then
       lowest_spell = 'Earth Shock'
     else
       lowest_spell = 'Flame Shock'
