@@ -13,6 +13,7 @@ local bindings = {
   ['Stormstrike'] = '2',
   ['Earth Shock'] = '3',
   ['Searing Totem'] = '4',
+  ['Feral Spirit'] = '6',
   ['Unleash Elements'] = 'S1',
   ['Flame Shock'] = 'S2',
   ['Lightning Bolt'] = 'S3',
@@ -126,7 +127,17 @@ function get_next_spell()
   -- See 4.
 
   -- 8.
-  -- TODO: implement
+  local frsp_start, frsp_time = get_cooldown('Feral Spirit')
+  local frsp_end = frsp_start + frsp_time
+
+  if frsp_start == 0 then
+    return 'Feral Spirit'
+  end
+
+  if frsp_end < lowest_time then
+    lowest_time = frsp_end
+    lowest_spell = 'Feral Spirit'
+  end
 
   return lowest_spell
 end
