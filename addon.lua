@@ -29,29 +29,35 @@ local onupdate
 function get_next_spell()
   local get_cooldown = GetSpellCooldown
 
-  local maelstrom_weapon_count = select(4, UnitBuff('player', 'Maelstrom Weapon'))
-  if maelstrom_weapon_count and maelstrom_weapon_count == 5 then
-    return 'Lightning Bolt'
+  --[[
+    This is the current priority:
+      1. Searing Totem
+      2. Lava Lash
+      3. Unleash Elements
+      4. Flame Shock with Unleash Elements buff
+      5. Lightning bolt with Maelstrom Weapon buff * 5
+      6. Stormstrike
+      7. Earth Shock
+      8. Spirit Wolves
+  ]]
+
+  -- might not be the best solution to put this at 9999 but it makes the steps
+  -- interchangeable so you could re-order them
+  local lowest_time = 9999
+  local lowest_spell
+
+  -- 1.
+  local active, name, _, _, _ = GetTotemInfo(1)
+  if not active or name ~= 'Searing Totem' then
+    return 'Searing Totem'
   end
 
-  local ue_start, ue_time = get_cooldown('Unleash Elements')
-  local ue_end = ue_start + ue_time
-
-  local ss_start, ss_time = get_cooldown('Stormstrike')
-  local ss_end = ss_start + ss_time
-
+  -- 2.
   local ll_start, ll_time = get_cooldown('Lava Lash')
   local ll_end = ll_start + ll_time
 
-  local fs_start, fs_time = get_cooldown('Flame Shock')
-  local fs_end = fs_start + fs_time
-
-  local lowest_time = ue_end
-  local lowest_spell = 'Unleash Elements'
-
-  if ss_end < lowest_time then
-    lowest_time = ss_end
-    lowest_spell = 'Stormstrike'
+  if ll_start == 0 then
+    return 'Lava Lash'
   end
 
   if ll_end < lowest_time then
@@ -59,16 +65,67 @@ function get_next_spell()
     lowest_spell = 'Lava Lash'
   end
 
+  -- 3.
+  local ue_start, ue_time = get_cooldown('Unleash Elements')
+  local ue_end = ue_start + ue_time
+
+  if ue_start == 0 then
+    return 'Unleash Elements'
+  end
+
+  if ue_end < lowest_time then
+    lowest_time = ue_end
+    lowest_spell = 'Unleash Elements'
+  end
+
+  -- 4.
+  local fs_start, fs_time = get_cooldown('Flame Shock')
+  local fs_end = fs_start + fs_time
+
+  if UnitBuff('player', 'Unleash Flame') then
+    if fs_start == 0 then
+      return 'Flame Shock'
+    end
+  elseif UnitBuff('target', 'Flame Shock') then
+    if fs_start == 0 then
+      return 'Earth Shock'
+    end
+  end
+
   if fs_end < lowest_time then
     lowest_time = fs_end
 
-    -- if the target has Flame Shock on him use Earth Shock
-    if UnitDebuff('target', 'Flame Shock') then
+    if UnitBuff('target', 'Flame Shock') then
       lowest_spell = 'Earth Shock'
     else
       lowest_spell = 'Flame Shock'
     end
   end
+
+  -- 5.
+  local maelstrom_weapon_count = select(4, UnitBuff('player', 'Maelstrom Weapon'))
+  if maelstrom_weapon_count and maelstrom_weapon_count == 5 then
+    return 'Lightning Bolt'
+  end
+
+  -- 6.
+  local ss_start, ss_time = get_cooldown('Stormstrike')
+  local ss_end = ss_start + ss_time
+
+  if ss_start == 0 then
+    return 'Stormstrike'
+  end
+
+  if ss_end < lowest_time then
+    lowest_time = ss_end
+    lowest_spell = 'Stormstrike'
+  end
+
+  -- 7.
+  -- See 4.
+
+  -- 8.
+  -- TODO: implement
 
   return lowest_spell
 end
