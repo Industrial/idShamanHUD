@@ -65,10 +65,10 @@ function get_next_spell()
     return 'Lava Lash'
   end
 
-  if ll_end < lowest_time then
-    lowest_time = ll_end
-    lowest_spell = 'Lava Lash'
-  end
+  -- since this is the first of the spells, don't put this in an if block since
+  -- we need lowest_spell filled
+  lowest_time = ll_end
+  lowest_spell = 'Lava Lash'
 
   -- 3.
   local ue_start, ue_time = get_cooldown('Unleash Elements')
