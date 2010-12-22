@@ -27,9 +27,15 @@ local spell_frame
 local shield_frame
 
 -- functions
+local is_enhancement
 local get_next_spell
 local enable
 local onupdate
+
+function is_enhancement()
+  -- TODO: maybe expand this, meh.
+  return GetSpellInfo(GetMajorTalentTreeBonuses(GetActiveTalentGroup(), false, false))=='Lava Lash'
+end
 
 function get_next_spell()
   local get_cooldown = GetSpellCooldown
