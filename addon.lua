@@ -29,7 +29,9 @@ local shield_frame
 -- functions
 local is_enhancement
 local get_next_spell
+local initialize
 local enable
+local disable
 local onupdate
 
 function is_enhancement()
@@ -139,14 +141,17 @@ function get_next_spell()
   return lowest_spell
 end
 
-function enable ()
+function initialize(addon_name)
+  if addon_name ~= 'idShamanHUD' then
+    return
+  end
+
   spell_frame = CreateFrame('Frame', 'idShamanHUDSpellFrame', UIParent)
   shield_frame = CreateFrame('Frame', 'idShamanHUDShieldFrame', UIParent)
 
   spell_frame:SetWidth(icon_size)
   spell_frame:SetHeight(icon_size)
   spell_frame:SetPoint(MC, UIParent, MC, 0, -150)
-  spell_frame:Show()
 
   spell_frame.binding_text = spell_frame:CreateFontString(nil, 'ARTWORK')
   spell_frame.binding_text:SetPoint(TL, spell_frame, TL, 3, -3)
@@ -171,7 +176,6 @@ function enable ()
   shield_frame:SetWidth(spell_frame:GetWidth() / 100 * 80)
   shield_frame:SetHeight(spell_frame:GetHeight() / 100 * 80)
   shield_frame:SetPoint(MR, spell_frame, ML, -5, 0)
-  shield_frame:Show()
 
   shield_frame.binding_text = shield_frame:CreateFontString(nil, 'ARTWORK')
   shield_frame.binding_text:SetPoint(TL, shield_frame, TL, 3, -3)
@@ -186,13 +190,25 @@ function enable ()
   shield_frame.texture:SetAllPoints(shield_frame)
   shield_frame.texture:SetTexture(select(3, GetSpellInfo('Lightning Shield')))
   shield_frame.texture:SetTexCoord(.07, .93, .07, .93)
+end
+
+function enable ()
+  if not is_enhancement() then
+    return
+  end
 
   event_frame:SetScript('OnUpdate', onupdate)
+  spell_frame:Show()
+  shield_frame:Show()
+end
+
+function disable()
+  spell_frame:Hide()
+  shield_frame:Hide()
+  event_frame:SetScript('OnUpdate', nil)
 end
 
 function onupdate (time_passed)
-  local getCD = GetSpellCooldown
-
   local spell
   local spell_start
   local spell_duration
@@ -202,7 +218,7 @@ function onupdate (time_passed)
   local time = GetTime()
 
   spell = get_next_spell()
-  spell_start, spell_duration = getCD(spell)
+  spell_start, spell_duration = GetSpellCooldown(spell)
   spell_end = spell_start + spell_duration
 
   spell_frame.texture:SetTexture(select(3, GetSpellInfo(spell)))
@@ -222,10 +238,20 @@ function onupdate (time_passed)
 end
 
 event_frame:SetScript('OnEvent', function(frame, event, ...)
-  if event == 'PLAYER_LOGIN' then
+  if event == 'ADDON_LOADED' then
+    initialize(...)
+  elseif event == 'PLAYER_LOGIN' then
+    enable()
+  elseif event == 'PLAYER_LOGOUT' then
+    disable()
+  elseif event == 'ACTIVE_TALENT_GROUP_CHANGED' then
+    disable()
     enable()
   end
 end)
 
+event_frame:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
+event_frame:RegisterEvent('ADDON_LOADED')
 event_frame:RegisterEvent('PLAYER_LOGIN')
+event_frame:RegisterEvent('PLAYER_LOGOUT')
 
