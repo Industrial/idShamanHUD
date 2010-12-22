@@ -43,7 +43,6 @@ function get_next_spell()
       5. Lightning bolt with Maelstrom Weapon buff * 5
       6. Stormstrike
       7. Earth Shock
-      8. Spirit Wolves
   ]]
 
   -- might not be the best solution to put this at 9999 but it makes the steps
@@ -130,19 +129,6 @@ function get_next_spell()
 
   -- 7.
   -- See 4.
-
-  -- 8.
-  local frsp_start, frsp_time = get_cooldown('Feral Spirit')
-  local frsp_end = frsp_start + frsp_time
-
-  if frsp_start == 0 then
-    return 'Feral Spirit'
-  end
-
-  if frsp_end < lowest_time then
-    lowest_time = frsp_end
-    lowest_spell = 'Feral Spirit'
-  end
 
   return lowest_spell
 end
