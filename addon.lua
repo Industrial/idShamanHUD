@@ -34,8 +34,13 @@ local disable
 local onupdate
 
 function is_enhancement()
-  -- TODO: maybe expand this, meh.
-  return GetSpellInfo(GetMajorTalentTreeBonuses(GetActiveTalentGroup(), false, false))=='Lava Lash'
+  -- TODO: figure out what makes this error out on first load but not on
+  -- subsequent reloads/relogs
+  local talent_group = GetActiveTalentGroup()
+  local spell_id = GetMajorTalentTreeBonuses(talent_group, false, false)
+  local spell_name = GetSpellInfo(spell_id)
+
+  return spell_name == 'Lava Lash'
 end
 
 function get_next_spell()
