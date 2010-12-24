@@ -150,7 +150,7 @@ function initialize(addon_name)
 
   spell_frame:SetWidth(icon_size)
   spell_frame:SetHeight(icon_size)
-  spell_frame:SetPoint(MC, UIParent, MC, 0, -150)
+  spell_frame:SetPoint(MC, UIParent, MC, 0, 0)
 
   spell_frame.binding_text = spell_frame:CreateFontString(nil, 'ARTWORK')
   spell_frame.binding_text:SetPoint(TL, spell_frame, TL, 3, -3)
