@@ -194,6 +194,8 @@ function initialize(addon_name)
   shield_frame.texture:SetAllPoints(shield_frame)
   shield_frame.texture:SetTexture(select(3, GetSpellInfo('Lightning Shield')))
   shield_frame.texture:SetTexCoord(.07, .93, .07, .93)
+
+  event_frame:UnregisterEvent('ADDON_LOADED')
 end
 
 function enable ()
