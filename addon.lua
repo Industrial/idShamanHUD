@@ -2,7 +2,6 @@ if select(2, UnitClass('player')) ~= 'SHAMAN' then return end
 
 -- TODO: make the thing draggable
 -- TODO: make it work for all levels, adding spells when you have them
--- TODO: make it do nothing if not enhancement specced
 
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellInfo = GetSpellInfo
