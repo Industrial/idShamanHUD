@@ -44,13 +44,12 @@ function get_next_spell()
 
   --[[
     This is the current priority:
-      1. Searing Totem
-      2. Lava Lash
-      3. Unleash Elements
-      4. Flame Shock with Unleash Elements buff
-      5. Lightning bolt with Maelstrom Weapon buff * 5
-      6. Stormstrike
-      7. Earth Shock
+      1. Lava Lash
+      2. Unleash Elements
+      3. Flame Shock with Unleash Elements buff
+      4. Lightning bolt with Maelstrom Weapon buff * 5
+      5. Stormstrike
+      6. Earth Shock
   ]]
 
   -- might not be the best solution to put this at 9999 but it makes the steps
@@ -59,12 +58,6 @@ function get_next_spell()
   local lowest_spell
 
   -- 1.
-  local active, name, _, _, _ = GetTotemInfo(1)
-  if not active or name ~= 'Searing Totem' then
-    return 'Searing Totem'
-  end
-
-  -- 2.
   local ll_start, ll_time = get_cooldown('Lava Lash')
   local ll_end = ll_start + ll_time
 
@@ -77,7 +70,7 @@ function get_next_spell()
   lowest_time = ll_end
   lowest_spell = 'Lava Lash'
 
-  -- 3.
+  -- 2.
   local ue_start, ue_time = get_cooldown('Unleash Elements')
   local ue_end = ue_start + ue_time
 
@@ -90,7 +83,7 @@ function get_next_spell()
     lowest_spell = 'Unleash Elements'
   end
 
-  -- 4.
+  -- 3.
   local fs_start, fs_time = get_cooldown('Flame Shock')
   local fs_end = fs_start + fs_time
 
@@ -116,13 +109,13 @@ function get_next_spell()
     end
   end
 
-  -- 5.
+  -- 4.
   local maelstrom_weapon_count = select(4, UnitBuff('player', 'Maelstrom Weapon'))
   if maelstrom_weapon_count and maelstrom_weapon_count == 5 then
     return 'Lightning Bolt'
   end
 
-  -- 6.
+  -- 5.
   local ss_start, ss_time = get_cooldown('Stormstrike')
   local ss_end = ss_start + ss_time
 
@@ -135,8 +128,8 @@ function get_next_spell()
     lowest_spell = 'Stormstrike'
   end
 
-  -- 7.
-  -- See 4.
+  -- 6.
+  -- See 3.
 
   return lowest_spell
 end
