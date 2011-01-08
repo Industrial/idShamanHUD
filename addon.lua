@@ -246,7 +246,7 @@ end
 event_frame:SetScript('OnEvent', function(frame, event, ...)
   if event == 'ADDON_LOADED' then
     initialize(...)
-  elseif event == 'PLAYER_LOGIN' then
+  elseif event == 'PLAYER_ENTERING_WORLD' then
     enable()
   elseif event == 'PLAYER_LOGOUT' then
     disable()
@@ -258,6 +258,6 @@ end)
 
 event_frame:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
 event_frame:RegisterEvent('ADDON_LOADED')
-event_frame:RegisterEvent('PLAYER_LOGIN')
+event_frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 event_frame:RegisterEvent('PLAYER_LOGOUT')
 
