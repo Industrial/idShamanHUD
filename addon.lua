@@ -24,6 +24,8 @@ local bindings = {
 local event_frame = CreateFrame('Frame')
 local spell_frame
 local shield_frame
+local weapon1_enchant_frame
+local weapon2_enchant_frame
 
 -- functions
 local is_enhancement
@@ -145,49 +147,16 @@ function initialize(addon_name)
   end
 
   spell_frame = CreateFrame('Frame', 'idShamanHUDSpellFrame', UIParent)
-  shield_frame = CreateFrame('Frame', 'idShamanHUDShieldFrame', UIParent)
-
-  spell_frame:SetWidth(icon_size)
-  spell_frame:SetHeight(icon_size)
-  spell_frame:SetPoint(MC, UIParent, MC, 0, 0)
-
   spell_frame.binding_text = spell_frame:CreateFontString(nil, 'ARTWORK')
-  spell_frame.binding_text:SetPoint(TL, spell_frame, TL, 3, -3)
-  spell_frame.binding_text:SetJustifyH('RIGHT')
-  spell_frame.binding_text:SetFont(GameFontNormal:GetFont(), 12, 'OUTLINE')
-  spell_frame.binding_text:SetTextColor(1, 1, 1)
-  spell_frame.binding_text:SetShadowColor(0, 0, 0)
-  spell_frame.binding_text:SetShadowOffset(1, -1)
-
   spell_frame.cooldown_text = spell_frame:CreateFontString(nil, 'ARTWORK')
-  spell_frame.cooldown_text:SetPoint(BR, spell_frame, BR, -3, 3)
-  spell_frame.cooldown_text:SetJustifyH('RIGHT')
-  spell_frame.cooldown_text:SetFont(GameFontNormal:GetFont(), 12, 'OUTLINE')
-  spell_frame.cooldown_text:SetTextColor(1, 1, 1)
-  spell_frame.cooldown_text:SetShadowColor(0, 0, 0)
-  spell_frame.cooldown_text:SetShadowOffset(1, -1)
-
   spell_frame.texture = spell_frame:CreateTexture(nil, 'HIGH')
-  spell_frame.texture:SetAllPoints(spell_frame)
-  spell_frame.texture:SetTexCoord(.07, .93, .07, .93)
-
-  shield_frame:SetWidth(spell_frame:GetWidth() / 100 * 80)
-  shield_frame:SetHeight(spell_frame:GetHeight() / 100 * 80)
-  shield_frame:SetPoint(MR, spell_frame, ML, -5, 0)
-
+  shield_frame = CreateFrame('Button', 'idShamanHUDShieldFrame', UIParent, 'SecureActionButtonTemplate')
   shield_frame.binding_text = shield_frame:CreateFontString(nil, 'ARTWORK')
-  shield_frame.binding_text:SetPoint(TL, shield_frame, TL, 3, -3)
-  shield_frame.binding_text:SetJustifyH('RIGHT')
-  shield_frame.binding_text:SetFont(GameFontNormal:GetFont(), 12, 'OUTLINE')
-  shield_frame.binding_text:SetTextColor(1, 1, 1)
-  shield_frame.binding_text:SetShadowColor(0, 0, 0)
-  shield_frame.binding_text:SetShadowOffset(1, -1)
-  shield_frame.binding_text:SetText(bindings['Lightning Shield'])
-
   shield_frame.texture = shield_frame:CreateTexture(nil, 'HIGH')
-  shield_frame.texture:SetAllPoints(shield_frame)
-  shield_frame.texture:SetTexture(select(3, GetSpellInfo('Lightning Shield')))
-  shield_frame.texture:SetTexCoord(.07, .93, .07, .93)
+  weapon1_enchant_frame = CreateFrame('Button', 'idShamanHUDWeapon1EnchantFrame', UIParent, 'SecureActionButtonTemplate')
+  weapon1_enchant_frame.texture = weapon1_enchant_frame:CreateTexture(nil, 'HIGH')
+  weapon2_enchant_frame = CreateFrame('Button', 'idShamanHUDWeapon2EnchantFrame', UIParent, 'SecureActionButtonTemplate')
+  weapon2_enchant_frame.texture = weapon2_enchant_frame:CreateTexture(nil, 'HIGH')
 
   event_frame:UnregisterEvent('ADDON_LOADED')
 end
@@ -197,14 +166,71 @@ function enable ()
     return
   end
 
+  spell_frame:SetWidth(icon_size)
+  spell_frame:SetHeight(icon_size)
+  spell_frame:SetPoint(MC, UIParent, MC, 0, 0)
+
+  spell_frame.binding_text:SetPoint(TL, spell_frame, TL, 3, -3)
+  spell_frame.binding_text:SetJustifyH('RIGHT')
+  spell_frame.binding_text:SetFont(GameFontNormal:GetFont(), 12, 'OUTLINE')
+  spell_frame.binding_text:SetTextColor(1, 1, 1)
+  spell_frame.binding_text:SetShadowColor(0, 0, 0)
+  spell_frame.binding_text:SetShadowOffset(1, -1)
+
+  spell_frame.cooldown_text:SetPoint(BR, spell_frame, BR, -3, 3)
+  spell_frame.cooldown_text:SetJustifyH('RIGHT')
+  spell_frame.cooldown_text:SetFont(GameFontNormal:GetFont(), 12, 'OUTLINE')
+  spell_frame.cooldown_text:SetTextColor(1, 1, 1)
+  spell_frame.cooldown_text:SetShadowColor(0, 0, 0)
+  spell_frame.cooldown_text:SetShadowOffset(1, -1)
+
+  spell_frame.texture:SetAllPoints(spell_frame)
+  spell_frame.texture:SetTexCoord(.07, .93, .07, .93)
+
+  shield_frame:SetWidth(spell_frame:GetWidth() / 100 * 80)
+  shield_frame:SetHeight(spell_frame:GetHeight() / 100 * 80)
+  shield_frame:SetPoint(MR, spell_frame, ML, -5, 0)
+  shield_frame:SetAttribute('type', 'spell')
+  shield_frame:SetAttribute('spell', 'Lightning Shield')
+
+  shield_frame.binding_text:SetPoint(TL, shield_frame, TL, 3, -3)
+  shield_frame.binding_text:SetJustifyH('RIGHT')
+  shield_frame.binding_text:SetFont(GameFontNormal:GetFont(), 12, 'OUTLINE')
+  shield_frame.binding_text:SetTextColor(1, 1, 1)
+  shield_frame.binding_text:SetShadowColor(0, 0, 0)
+  shield_frame.binding_text:SetShadowOffset(1, -1)
+  shield_frame.binding_text:SetText(bindings['Lightning Shield'])
+
+  shield_frame.texture:SetAllPoints(shield_frame)
+  shield_frame.texture:SetTexture(select(3, GetSpellInfo('Lightning Shield')))
+  shield_frame.texture:SetTexCoord(.07, .93, .07, .93)
+
+  weapon1_enchant_frame:SetWidth(spell_frame:GetWidth() / 100 * 40)
+  weapon1_enchant_frame:SetHeight(spell_frame:GetHeight() / 100 * 40)
+  weapon1_enchant_frame:SetPoint(TR, spell_frame, BR, -2.5, -5)
+  weapon1_enchant_frame:SetAttribute('type', 'spell')
+  weapon1_enchant_frame:SetAttribute('spell', 'Windfury Weapon')
+
+  weapon1_enchant_frame.texture:SetAllPoints(weapon1_enchant_frame)
+  weapon1_enchant_frame.texture:SetTexture(select(3, GetSpellInfo('Windfury Weapon')))
+  weapon1_enchant_frame.texture:SetTexCoord(.07, .93, .07, .93)
+
+  weapon2_enchant_frame:SetWidth(spell_frame:GetWidth() / 100 * 40)
+  weapon2_enchant_frame:SetHeight(spell_frame:GetHeight() / 100 * 40)
+  weapon2_enchant_frame:SetPoint(TL, spell_frame, BL, 2.5, -5)
+  weapon2_enchant_frame:SetAttribute('type', 'spell')
+  weapon2_enchant_frame:SetAttribute('spell', 'Flametongue Weapon')
+
+  weapon2_enchant_frame.texture:SetAllPoints(weapon2_enchant_frame)
+  weapon2_enchant_frame.texture:SetTexture(select(3, GetSpellInfo('Flametongue Weapon')))
+  weapon2_enchant_frame.texture:SetTexCoord(.07, .93, .07, .93)
+
   event_frame:SetScript('OnUpdate', onupdate)
   spell_frame:Show()
-  shield_frame:Show()
 end
 
 function disable()
   spell_frame:Hide()
-  shield_frame:Hide()
   event_frame:SetScript('OnUpdate', nil)
 end
 
@@ -231,9 +257,21 @@ function onupdate (time_passed)
   spell_frame.cooldown_text:SetText(spell_end > time and ('%.1f'):format(spell_end - time) or 0)
 
   if not UnitBuff('player', 'Lightning Shield') then
-    shield_frame:SetAlpha(1)
+    shield_frame:Show()
   else
-    shield_frame:SetAlpha(0)
+    shield_frame:Hide()
+  end
+
+  hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges = GetWeaponEnchantInfo()
+  if not hasMainHandEnchant then
+    weapon1_enchant_frame:Show()
+  else
+    weapon1_enchant_frame:Hide()
+  end
+  if not hasOffHandEnchant then
+    weapon2_enchant_frame:Show()
+  else
+    weapon2_enchant_frame:Hide()
   end
 end
 
